@@ -14,3 +14,8 @@
       authorized_key: user=ubuntu key="{{item}}"
       with_file:
         - ~/.ssh/id_rsa.pub
+
+    - name: Disable Swap
+      shell: |
+        sed -i '/swap/d' /etc/fstab
+        swapoff -a
