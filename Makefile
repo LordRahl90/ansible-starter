@@ -7,6 +7,9 @@ hosts:
 facts:
 	ansible all -m gather_facts
 
+docker:
+	ansible all -m apt -a name=docker --become --ask-become-pass
+
 identity:
 	vagrant ssh-config | grep IdentityFile
 
