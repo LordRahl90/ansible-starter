@@ -1,0 +1,7 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Uninstall Docker
+      apt:
+        name: docker.io
+        state: absent

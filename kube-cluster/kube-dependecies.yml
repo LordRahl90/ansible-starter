@@ -1,0 +1,58 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: Start Docker Service
+      shell: |
+        systemctl start docker.service
+
+    - name: Install Transport HTTPS
+      apt:
+        name: apt-transport-https
+        state: present
+
+    - name: add K8s Apt Key
+      apt_key:
+        url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+        state: present
+
+    - name: Add k8s Apt Repository
+      apt_repository:
+        repo: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+        state: present
+        filename: 'kubernetes'
+
+    - name: Install Kubelet
+      apt:
+        name: kubelet=1.22.0-00
+        state: present
+        update_cache: true
+
+    - name: Install KubeAdm
+      apt:
+        name: kubeadm=1.22.0-00
+        state: present
+
+- hosts: master
+  become: yes
+  tasks:
+    - name: Install Kubectl on master
+      apt:
+        name: kubectl=1.22.0-00
+        state: present
+        force: yes
