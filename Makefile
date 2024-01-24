@@ -15,3 +15,12 @@ identity:
 
 vd:
 	vagrant destroy
+
+setup-kube:
+	ansible-playbook ./kube-cluster/initial.yml
+	ansible-playbook ./kube-cluster/dependencies.yml
+	ansible-playbook ./kube-cluster/master-node.yml
+	ansible-playbook ./kube-cluster/worker-nodes.yml
+	ansible-playbook ./kube-cluster/fetch.yml
+
+sk:setup-kube
