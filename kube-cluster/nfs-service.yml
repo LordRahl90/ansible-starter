@@ -1,0 +1,38 @@
+- hosts: nfs
+  become: yes
+  tasks:
+    - name: Create NFS Directory
+      become: yes
+      file:
+        path: /srv/nfs/kubedata
+        state: directory
+        mode: 0777
+
+    - name: Setup NFS Server
+      apt:
+        name: nfs-server
+        state: present
+
+    - name: Ensure required entries are made to hosts file.
+      lineinfile:
+        path: /etc/exports
+        state: present
+        line: "{{ item }}"
+      with_items:
+        - '/srv/nfs/kubedata  *(rw,no_root_squash,no_subtree_check,insecure)' 
+
+    - name: Restart nfs-kernel-server.service 
+      ansible.builtin.systemd:
+        daemon_reload: yes
+        state: started
+        name: nfs-kernel-server.service
+
+    - name: Re-export the share
+      command: exportfs -rav
+
+    - name: Make sure All is good
+      register: all_good
+      shell: |
+        showmount -e localhost
+
+    - debug: var=all_good.stdout_lines

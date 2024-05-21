@@ -17,6 +17,7 @@ vd:
 	vagrant destroy -f
 
 setup-kube:
+	ansible-playbook ./kube-cluster/nfs-service.yml
 	ansible-playbook ./kube-cluster/initial.yml
 	ansible-playbook ./kube-cluster/dependencies.yml
 	ansible-playbook ./kube-cluster/master-node.yml

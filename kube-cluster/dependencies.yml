@@ -98,11 +98,7 @@
         name: kubeadm=1.30.*
         state: present
 
-- hosts: master
-  become: yes
-  tasks:
-    - name: Install Kubectl on master
+    - name: Install NFS Common
       apt:
-        name: kubectl=1.30.*
-        state: present
-        force: yes
+        name: nfs-common
+        state: latest

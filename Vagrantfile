@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
     master.vm.provider "vmware_fusion" do |v|
       v.memory = "4096"
       v.cpus = "2"
-      v.gui = false
+      v.gui = true
     end
   end
 
@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
       node.vm.provider "vmware_fusion" do |v|
         v.memory = "2024"
         v.cpus = "1"
-        v.gui = false
+        v.gui = true
       end
     end
   end  
@@ -31,11 +31,11 @@ Vagrant.configure("2") do |config|
   config.vm.define "nfs1" do |nfs1|
     config.vm.box = "sloopstash/ubuntu-22-04"
     nfs1.vm.hostname = "nfs.example.com"
-    nfs1.vm.network = "private_network", ip: "172.16.16.104"
+    nfs1.vm.network "private_network", ip: "172.16.16.105"
     nfs1.vm.provider "vmware_fusion" do |v|
-      v.memory = "2048"
-      v.cpus = 1
-      v.gui = false
+      v.memory = "4096"
+      v.cpus = "2"
+      v.gui = true
     end
   end
 
