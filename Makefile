@@ -14,7 +14,7 @@ identity:
 	vagrant ssh-config | grep IdentityFile
 
 vd:
-	vagrant destroy
+	vagrant destroy -f
 
 setup-kube:
 	ansible-playbook ./kube-cluster/initial.yml

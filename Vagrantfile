@@ -7,9 +7,9 @@ Vagrant.configure("2") do |config|
     master.vm.hostname = "master.example.com"
     master.vm.network "private_network", ip: "172.16.16.100"
     master.vm.provider "vmware_fusion" do |v|
-      v.memory = "4056"
-      v.cpus = "4"
-      v.gui = true
+      v.memory = "4096"
+      v.cpus = "2"
+      v.gui = false
     end
   end
 
@@ -21,22 +21,22 @@ Vagrant.configure("2") do |config|
       node.vm.hostname = "worker#{i}.example.com"
       node.vm.network "private_network", ip: "172.16.16.10#{i}"
       node.vm.provider "vmware_fusion" do |v|
-        v.memory = "2048"
-        v.cpus = "2"
-        v.gui = true
+        v.memory = "2024"
+        v.cpus = "1"
+        v.gui = false
       end
     end
   end  
 
-  # config.vm.define "debian" do |debian|
-  #   debian.vm.box = "generic/debian12"
-  #   debian.vm.hostname = "debian.example.com"
-  #   debian.vm.network "private_network", ip: "172.16.16.106"
-  #   debian.vm.provider "vmware_fusion" do |v|
-  #     v.memory = "2048"
-  #     v.cpus = "2"
-  #     v.gui = true
-  #   end
-  # end
+  config.vm.define "nfs1" do |nfs1|
+    config.vm.box = "sloopstash/ubuntu-22-04"
+    nfs1.vm.hostname = "nfs.example.com"
+    nfs1.vm.network = "private_network", ip: "172.16.16.104"
+    nfs1.vm.provider "vmware_fusion" do |v|
+      v.memory = "2048"
+      v.cpus = 1
+      v.gui = false
+    end
+  end
 
 end
