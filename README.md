@@ -23,6 +23,7 @@ Setting up the kubernetes platform
 * `ansible-playbook ./kube-cluster/master-node.yml`
 * `ansible-playbook ./kube-cluster/worker-nodes.yml`
 * `ansible-playbook ./kube-cluster/fetch.yml` copies the kubeconfig to local folder
+* `ansible-playbook ./kube-cluster/nfs-service.yml`
 
 
 Helm NFS Provisioner

@@ -23,5 +23,6 @@ setup-kube:
 	ansible-playbook ./kube-cluster/master-node.yml
 	ansible-playbook ./kube-cluster/worker-nodes.yml
 	ansible-playbook ./kube-cluster/fetch.yml
+	ansible-playbook ./kube-cluster/nfs-service.yml
 
 sk:setup-kube
