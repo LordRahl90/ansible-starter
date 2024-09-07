@@ -28,3 +28,13 @@ Setting up the kubernetes platform
 
 Helm NFS Provisioner
 https://artifacthub.io/packages/helm/nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
+(
+    ```
+    helm install nfs nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+    --set nfs.server=172.16.16.105 \
+    --set nfs.path=/srv/nfs/kubedata \
+    --set storageClass.defaultClass=true
+    ```
+)
+
+To resolve DNS issues with kube-native https://discuss.kubernetes.io/t/dns-not-resolving-cluster-local/19144/3
