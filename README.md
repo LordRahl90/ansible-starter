@@ -31,7 +31,7 @@ https://artifacthub.io/packages/helm/nfs-subdir-external-provisioner/nfs-subdir-
 (
     ```
     helm install nfs nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
-    --set nfs.server=172.16.16.105 \
+    --set nfs.server=172.16.16.120 \
     --set nfs.path=/srv/nfs/kubedata \
     --set storageClass.defaultClass=true
     ```
