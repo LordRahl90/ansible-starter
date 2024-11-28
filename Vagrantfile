@@ -1,75 +1,25 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+  # config.vm.box = "perk/ubuntu-2204-arm64"  # Or your ARM64 box
+  # config.vm.box = "bento/ubuntu-22.04"
 
-VAGRANT_API_VERSION         = "2"
-ENV['VAGRANT_NO_PARALLEL']  = 'yes'
+  config.vm.box = "generic/ubuntu2004"
+  config.vm.box_version = "4.3.12"
 
-VAGRANT_BOX         = "net9/ubuntu-24.04-arm64"
-# VAGRANT_BOX_VERSION = "4.2.10"
-CPUS_MASTER_NODE    = 2
-CPUS_WORKER_NODE    = 1
-MEMORY_MASTER_NODE  = 2048
-MEMORY_WORKER_NODE  = 1024
-WORKER_NODES_COUNT  = 2
-NETWORK_PREFIX      = "172.16.16"
+  config.vm.network "private_network", ip: "192.168.56.101"
+  
 
+  # Configure the QEMU provider
+  # config.vm.provider "qemu" do |qemu|
+  config.vm.provider "virtualbox" do |qemu|
+    qemu.memory = 2048
+    qemu.cpus = 2
+  
 
-Vagrant.configure(VAGRANT_API_VERSION) do |config|
+    # Bridged networking setup
+    # qemu.network_type = "bridge"
+    # qemu.bridge = "en0"  # Replace "en0" with your network interface (can use `ifconfig` to find it)
 
-  config.vm.box               = VAGRANT_BOX
-  config.vm.box_check_update  = false
-  # config.vm.box_version       = VAGRANT_BOX_VERSION
-
-  # config.vm.provision "shell", path: "bootstrap.sh"
-
-  # Kubernetes Master Server
-  config.vm.define "kmaster" do |node|
-
-    node.vm.hostname = "kmaster.example.com"
-    node.vm.network "private_network", ip: "#{NETWORK_PREFIX}.100", nictype: "bridge102"
-
-    node.vm.provider :virtualbox do |v|
-      v.name    = "kmaster"
-      v.memory  = MEMORY_MASTER_NODE
-      v.cpus    = CPUS_MASTER_NODE
-      v.gui     = true
-    end
-
-    node.vm.provider :libvirt do |v|
-      v.memory  = MEMORY_MASTER_NODE
-      v.nested  = true
-      v.cpus    = CPUS_MASTER_NODE
-    end
-
-    # node.vm.provision "shell", path: "bootstrap_kmaster.sh"
-
+    # # Optional: Assign a static IP to the guest
+    # qemu.network_ip = "10.1.1.100"  # Static IP for the VM
   end
-
-
-  # Kubernetes Worker Nodes
-  (1..WORKER_NODES_COUNT).each do |i|
-
-    config.vm.define "kworker#{i}" do |node|
-
-      node.vm.hostname = "kworker#{i}.example.com"
-      node.vm.network "private_network", ip: "#{NETWORK_PREFIX}.10#{i}"
-
-      node.vm.provider :virtualbox do |v|
-        v.name    = "kworker#{i}"
-        v.memory  = MEMORY_WORKER_NODE
-        v.cpus    = CPUS_WORKER_NODE
-      end
-
-      node.vm.provider :libvirt do |v|
-        v.memory  = MEMORY_WORKER_NODE
-        v.nested  = true
-        v.cpus    = CPUS_WORKER_NODE
-      end
-
-      # node.vm.provision "shell", path: "bootstrap_kworker.sh"
-
-    end
-
-  end
-
 end
