@@ -1,6 +1,11 @@
 - hosts: master
   become: yes
   tasks:
+    - name: Remove Kubeconfig
+      file:
+        path: ./kubeconfig
+        state: absent
+
     - name: Copy Kubeconfig to local
       fetch:
         src: /etc/kubernetes/admin.conf
