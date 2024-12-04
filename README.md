@@ -27,6 +27,8 @@ Setting up the kubernetes platform
 
 
 Helm NFS Provisioner
+`helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner`
+
 https://artifacthub.io/packages/helm/nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
 (
     ```
