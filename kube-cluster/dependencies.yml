@@ -74,7 +74,7 @@
 
     - name: Add k8s APT Key
       get_url:
-        url: https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key
+        url: https://pkgs.k8s.io/core:/stable:/v1.34/deb/Release.key
         dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
         mode: '0644'
         force: true
@@ -83,19 +83,19 @@
       apt_repository:
         update_cache: yes
         # repo: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
-        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /"
+        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /"
         state: present
         filename: 'kubernetes'
 
     - name: Install Kubelet
       apt:
-        name: kubelet=1.30.*
+        name: kubelet=1.34.*
         state: present
         update_cache: true
 
     - name: Install KubeAdm
       apt:
-        name: kubeadm=1.30.*
+        name: kubeadm=1.34.*
         state: present
 
     - name: Install NFS Common

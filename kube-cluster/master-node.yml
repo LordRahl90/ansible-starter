@@ -3,7 +3,7 @@
   tasks:
     - name: Install Kubectl on master
       apt:
-        name: kubectl=1.30.*
+        name: kubectl=1.34.*
         state: present
         force: yes
     - name: Initialize cluster
