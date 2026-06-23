@@ -1,0 +1,97 @@
+- hosts: all
+  become: yes
+  tags:
+    - dependencies
+  tasks:
+    - name: Turn off Swap
+      shell: |
+        sed -i '/swap/d' /etc/fstab
+        swapoff -a
+
+    - name: Get Hostnames
+      shell: |
+        hostname
+
+
+- hosts: master
+  become: yes
+  tags:
+    - setup
+  tasks:
+    - name: Install K3s
+      shell: |
+        curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server \
+        --node-ip 172.16.16.100 \
+        --advertise-address 172.16.16.100 \
+        --bind-address 172.16.16.100 \
+        --flannel-iface eth1 \
+        --tls-san 172.16.16.100" sh -
+
+    - name: Wait for node-token file to be present
+      wait_for:
+        path: /var/lib/rancher/k3s/server/node-token
+        state: present
+        timeout: 60
+
+    - name: Get Node Token
+      shell: cat /var/lib/rancher/k3s/server/node-token
+      register: node_token
+
+    - name: Set Node Token
+      set_fact:
+        node_token: "{{ node_token.stdout }}"
+
+    - name: Get Cluster Info
+      shell: kubectl cluster-info
+
+- hosts: workers
+  become: yes
+  tags:
+    - setup
+  vars:
+    master_ip: 172.16.16.100
+  tasks:
+    - name: Join Cluster as workers
+      shell: |
+        curl -sfL https://get.k3s.io | K3S_URL=https://{{ master_ip }}:6443 K3S_TOKEN={{ hostvars['master1'].node_token }} sh -
+
+
+- hosts: master
+  become: yes
+  tags:
+    - fetch
+  vars:
+    master_ip: 172.16.16.100
+  tasks:
+    - name: Remove Kubeconfig
+      file:
+        path: ./kubeconfig
+        state: absent
+
+    - name: Copy Kubeconfig to local
+      fetch:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: ./kubeconfig
+        flat: yes
+
+    - name: Update kubeconfig server address to master IP
+      delegate_to: localhost
+      become: no
+      replace:
+        path: ./kubeconfig
+        regexp: 'https://127\.0\.0\.1:6443'
+        replace: 'https://{{ master_ip }}:6443'
+
+    - name: Get cluster nodes from local machine
+      delegate_to: localhost
+      become: no
+      command: kubectl get nodes --kubeconfig={{ playbook_dir }}/kubeconfig
+      register: cluster_nodes
+      failed_when: false
+      changed_when: false
+
+    - name: Show cluster nodes
+      delegate_to: localhost
+      become: no
+      debug:
+        msg: "{{ cluster_nodes.stdout_lines if cluster_nodes.rc == 0 else cluster_nodes.stderr_lines }}"

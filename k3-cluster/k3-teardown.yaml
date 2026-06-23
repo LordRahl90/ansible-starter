@@ -1,0 +1,49 @@
+- hosts: workers
+  become: yes
+  tags:
+    - teardown
+  tasks:
+    - name: Uninstall K3s agent on workers
+      shell: /usr/local/bin/k3s-agent-uninstall.sh
+      args:
+        removes: /usr/local/bin/k3s-agent-uninstall.sh
+
+- hosts: master
+  become: yes
+  tags:
+    - teardown
+  tasks:
+    - name: Uninstall K3s server on master
+      shell: /usr/local/bin/k3s-uninstall.sh
+      args:
+        removes: /usr/local/bin/k3s-uninstall.sh
+
+- hosts: all
+  become: yes
+  tags:
+    - cleanup
+  tasks:
+    - name: Re-enable swap
+      shell: swapon -a
+
+    - name: Remove leftover K3s data directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/rancher
+        - /var/lib/rancher
+        - /var/lib/kubelet
+        - /run/k3s
+        - /run/flannel
+
+- hosts: localhost
+  connection: local
+  become: no
+  tags:
+    - local
+  tasks:
+    - name: Remove local kubeconfig
+      file:
+        path: "{{ playbook_dir }}/kubeconfig"
+        state: absent
