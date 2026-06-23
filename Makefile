@@ -1,5 +1,5 @@
 ping:
-	ansible all -i inventory -m ping
+	ansible all -i inventory -m ping -vvv
 
 hosts:
 	ansible all --list-hosts
@@ -15,10 +15,11 @@ identity:
 
 vd:
 	vagrant destroy -f
+	rm -rf .vagrant
 
 setup-kube:
 	ansible-playbook ./kube-cluster/nfs-service.yml
-	ansible-playbook ./kube-cluster/initial.yml
+	ansible-playbook ./kutbe-cluster/initial.yml
 	ansible-playbook ./kube-cluster/dependencies.yml
 	ansible-playbook ./kube-cluster/master-node.yml
 	ansible-playbook ./kube-cluster/worker-nodes.yml

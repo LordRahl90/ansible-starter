@@ -1,4 +1,6 @@
-- hosts: all
+- hosts:
+    - master
+    - worker
   become: yes
   tasks:
     - name: Create the 'ubuntu' user

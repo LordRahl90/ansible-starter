@@ -9,6 +9,7 @@ Vagrant.configure("2") do |config|
     master.vm.network "private_network", ip: "172.16.16.100"
     # master.vm.provider "virtualbox" do |v|
     master.vm.provider "vmware_fusion" do |v|
+      v.vmx["ethernet1.pcislotnumber"] = "224"
       # v.name = "master"
       v.memory = "4096"
       v.cpus = "2"
@@ -26,6 +27,7 @@ Vagrant.configure("2") do |config|
       node.vm.network "private_network", ip: "172.16.16.10#{i}"
       # node.vm.provider "virtualbox" do |v|
       node.vm.provider "vmware_fusion" do |v|
+        v.vmx["ethernet1.pcislotnumber"] = "224"
         # v.name = "worker#{i}"
         v.memory = "2024"
         v.cpus = "1"
@@ -38,9 +40,10 @@ Vagrant.configure("2") do |config|
     # config.vm.box = "net9/ubuntu-24.04-arm64"
     nfs1.vm.box = "sloopstash/ubuntu-linux-22-04"
     nfs1.vm.hostname = "nfs.example.com"
-    nfs1.vm.network "private_network", ip: "172.16.16.120"
+    nfs1.vm.network "private_network", ip: "172.16.16.200"
     # nfs1.vm.provider "virtualbox" do |v|
     nfs1.vm.provider "vmware_fusion" do |v|
+      v.vmx["ethernet1.pcislotnumber"] = "224"
       # v.name = "nfs"
       v.memory = "4096"
       v.cpus = "2"
